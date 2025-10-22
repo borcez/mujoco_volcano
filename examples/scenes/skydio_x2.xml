@@ -1,0 +1,107 @@
+<mujoco model="Skydio X2 Drone">
+  <compiler angle="degree" coordinate="local" inertiafromgeom="true"/>
+
+  <option timestep="0.002" density="1.204" viscosity="1.8e-5" integrator="RK4" gravity="0 0 -9.81"/>
+
+  <visual>
+    <global elevation="-20" azimuth="135"/>
+    <map stiffness="100" stiffnessrot="50"/>
+  </visual>
+
+  <asset>
+    <texture name="grid" type="2d" builtin="checker" width="512" height="512" rgb1="0.1 0.1 0.1" rgb2="0.15 0.15 0.15"/>
+    <material name="grid" texture="grid" texrepeat="10 10" texuniform="true" reflectance="0.3"/>
+
+    <!-- Skydio X2 Colors -->
+    <material name="body_black" rgba="0.1 0.1 0.1 1"/>
+    <material name="accent_orange" rgba="1 0.4 0 1"/>
+    <material name="rotor_gray" rgba="0.3 0.3 0.3 0.8"/>
+  </asset>
+
+  <default>
+    <geom friction="0.9"/>
+    <joint damping="0.5" armature="0.01"/>
+    <motor ctrllimited="true" ctrlrange="-1 1"/>
+  </default>
+
+  <worldbody>
+    <!-- Ground plane -->
+    <geom name="ground" type="plane" size="50 50 0.1" pos="0 0 0" material="grid"/>
+
+    <!-- Lighting -->
+    <light name="sun" directional="true" pos="0 0 10" dir="0 0 -1" diffuse="0.8 0.8 0.8"/>
+    <light name="ambient" directional="false" pos="0 0 5" diffuse="0.4 0.4 0.4"/>
+
+    <!-- Skydio X2 Drone -->
+    <body name="drone_base" pos="0 0 3.5">
+      <freejoint name="drone_root"/>
+
+      <!-- Drone center body (simplified) -->
+      <geom name="drone_body" type="box" size="0.15 0.15 0.05" rgba="0.1 0.1 0.1 1" mass="0.8"/>
+
+      <!-- Front left arm -->
+      <body name="arm_fl" pos="0.12 0.12 0">
+        <geom name="arm_fl_geom" type="capsule" size="0.008" fromto="0 0 0 0.05 0.05 0" rgba="0.1 0.1 0.1 1" mass="0.02"/>
+        <body name="motor_fl" pos="0.05 0.05 0">
+          <geom name="motor_fl_geom" type="cylinder" size="0.02 0.008" rgba="0.2 0.2 0.2 1" mass="0.03"/>
+          <!-- Rotor -->
+          <body name="rotor_fl" pos="0 0 0.015">
+            <joint name="rotor_fl_joint" type="hinge" axis="0 0 1" limited="false" damping="0.001"/>
+            <geom name="prop_fl_1" type="capsule" size="0.005" fromto="0 0 0 0.12 0 0" rgba="0.3 0.3 0.3 0.7" mass="0.005"/>
+            <geom name="prop_fl_2" type="capsule" size="0.005" fromto="0 0 0 -0.12 0 0" rgba="0.3 0.3 0.3 0.7" mass="0.005"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- Front right arm -->
+      <body name="arm_fr" pos="0.12 -0.12 0">
+        <geom name="arm_fr_geom" type="capsule" size="0.008" fromto="0 0 0 0.05 -0.05 0" rgba="0.1 0.1 0.1 1" mass="0.02"/>
+        <body name="motor_fr" pos="0.05 -0.05 0">
+          <geom name="motor_fr_geom" type="cylinder" size="0.02 0.008" rgba="0.2 0.2 0.2 1" mass="0.03"/>
+          <body name="rotor_fr" pos="0 0 0.015">
+            <joint name="rotor_fr_joint" type="hinge" axis="0 0 1" limited="false" damping="0.001"/>
+            <geom name="prop_fr_1" type="capsule" size="0.005" fromto="0 0 0 0.12 0 0" rgba="0.3 0.3 0.3 0.7" mass="0.005"/>
+            <geom name="prop_fr_2" type="capsule" size="0.005" fromto="0 0 0 -0.12 0 0" rgba="0.3 0.3 0.3 0.7" mass="0.005"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- Rear left arm -->
+      <body name="arm_rl" pos="-0.12 0.12 0">
+        <geom name="arm_rl_geom" type="capsule" size="0.008" fromto="0 0 0 -0.05 0.05 0" rgba="0.1 0.1 0.1 1" mass="0.02"/>
+        <body name="motor_rl" pos="-0.05 0.05 0">
+          <geom name="motor_rl_geom" type="cylinder" size="0.02 0.008" rgba="0.2 0.2 0.2 1" mass="0.03"/>
+          <body name="rotor_rl" pos="0 0 0.015">
+            <joint name="rotor_rl_joint" type="hinge" axis="0 0 1" limited="false" damping="0.001"/>
+            <geom name="prop_rl_1" type="capsule" size="0.005" fromto="0 0 0 0.12 0 0" rgba="0.3 0.3 0.3 0.7" mass="0.005"/>
+            <geom name="prop_rl_2" type="capsule" size="0.005" fromto="0 0 0 -0.12 0 0" rgba="0.3 0.3 0.3 0.7" mass="0.005"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- Rear right arm -->
+      <body name="arm_rr" pos="-0.12 -0.12 0">
+        <geom name="arm_rr_geom" type="capsule" size="0.008" fromto="0 0 0 -0.05 -0.05 0" rgba="0.1 0.1 0.1 1" mass="0.02"/>
+        <body name="motor_rr" pos="-0.05 -0.05 0">
+          <geom name="motor_rr_geom" type="cylinder" size="0.02 0.008" rgba="0.2 0.2 0.2 1" mass="0.03"/>
+          <body name="rotor_rr" pos="0 0 0.015">
+            <joint name="rotor_rr_joint" type="hinge" axis="0 0 1" limited="false" damping="0.001"/>
+            <geom name="prop_rr_1" type="capsule" size="0.005" fromto="0 0 0 0.12 0 0" rgba="0.3 0.3 0.3 0.7" mass="0.005"/>
+            <geom name="prop_rr_2" type="capsule" size="0.005" fromto="0 0 0 -0.12 0 0" rgba="0.3 0.3 0.3 0.7" mass="0.005"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- LED indicators -->
+      <geom name="led_front" type="sphere" size="0.01" pos="0.08 0 0.03" rgba="0 1 0 0.8" mass="0.001"/>
+      <geom name="led_rear" type="sphere" size="0.01" pos="-0.08 0 0.03" rgba="1 0 0 0.8" mass="0.001"/>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <motor name="rotor_fl_motor" joint="rotor_fl_joint" gear="1" ctrlrange="-100 100"/>
+    <motor name="rotor_fr_motor" joint="rotor_fr_joint" gear="1" ctrlrange="-100 100"/>
+    <motor name="rotor_rl_motor" joint="rotor_rl_joint" gear="1" ctrlrange="-100 100"/>
+    <motor name="rotor_rr_motor" joint="rotor_rr_joint" gear="1" ctrlrange="-100 100"/>
+  </actuator>
+</mujoco>
